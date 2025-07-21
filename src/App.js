@@ -6,6 +6,8 @@ const { profileRouter } = require("./router/profileRouter");
 const { requestRouter } = require("./router/requestRouter");
 const { userRouter } = require("./router/userRouter");
 
+console.log("hiii")
+
 const app = express();
 
 app.use(express.json());
