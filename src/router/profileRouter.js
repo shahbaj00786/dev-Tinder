@@ -8,8 +8,13 @@ const profileRouter = express.Router();
 profileRouter.use(cookieParser());
 
 profileRouter.get("/profile/view", auth, async (req, res) => {
-  const user = req.user;
-  await res.send(user);
+  try {
+    const user = req.user;
+
+    res.send(user);
+  } catch (err) {
+    res.status(400).send("ERROR : " + err.message);
+  }
 });
 
 
