@@ -4,7 +4,7 @@ const User = require("../schema/userSchema");
 const auth = async (req, res, next) => {
   const { token } = req.cookies;
   if (!token) {
-    throw new Error("token not found");
+    return res.status(401).send("Please login")
   }
 
   const decodeObj = await jwt.verify(token, "DEV@Tinder$790");

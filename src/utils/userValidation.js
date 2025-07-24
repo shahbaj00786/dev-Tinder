@@ -23,13 +23,22 @@ const userValidation = (req) => {
 
 const updateValidation= (req)=>
 {
-  const allowedUpdate=["firstName", "lastName", "password"]
+  const allowedEditFields = [
+    "firstName",
+    "lastName",
+    "emailId",
+    "photoUrl",
+    "gender",
+    "age",
+    "about",
+    "skills",
+  ];
 
-  const isUpdateAllow = Object.keys(req.body).every((key) =>{
-    allowedUpdate.includes(key)
-  }) 
+  const isEditAllowed = Object.keys(req.body).every((field) =>
+    allowedEditFields.includes(field)
+  );
 
-  return isUpdateAllow
+  return isEditAllowed;
 
 }
 

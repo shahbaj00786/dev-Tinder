@@ -6,6 +6,7 @@ const User = require("../schema/userSchema");
 const userRouter = express.Router();
 
 userRouter.get("/user/request/pending", auth, async (req, res) => {
+   const USER_SAFE_DATA=( "firstName  lastName emailId  about photoUrl skills  gender")
   const loggedInUser = req.user;
 
   const myConnections = await requestSchema
@@ -13,7 +14,7 @@ userRouter.get("/user/request/pending", auth, async (req, res) => {
       toUserId: loggedInUser._id,
       status: "intrested",
     })
-    .populate("fromUserId", "firstName lastName");
+    .populate("fromUserId", USER_SAFE_DATA);
 
   res
     .status(201)
@@ -21,30 +22,37 @@ userRouter.get("/user/request/pending", auth, async (req, res) => {
 });
 
 userRouter.get("/user/connections", auth, async (req, res) => {
-  const loggedInUser = req.user;
+   const USER_SAFE_DATA=( "firstName  lastName emailId  about photoUrl skills  gender")
+  try {
+    const loggedInUser = req.user;
 
-  const myConnections = await requestSchema
-    .find({
+    const connectionRequests = await requestSchema.find({
       $or: [
-        { fromUserId: loggedInUser._id, status: "intrested" },
-        { toUserId: loggedInUser._id, status: "intrested" },
+        { toUserId: loggedInUser._id, status: "accepted" },
+        { fromUserId: loggedInUser._id, status: "accepted" },
       ],
     })
-    .populate("fromUserId", "firstName lastName")
-    .populate("toUserId", "firstName lastName");
+      .populate("fromUserId", USER_SAFE_DATA)
+      .populate("toUserId", USER_SAFE_DATA);
 
-  myConnections.forEach((req) => {
-    if (req.fromUserId._id.toString() == loggedInUser._id.toString()) {
-      return req.toUserId;
-    }
-    return req.toUserId;
-  });
+    console.log(connectionRequests);
 
-  res.status(201).json({ massage: "my connections are", data: myConnections });
+    const data = connectionRequests.map((row) => {
+      if (row.fromUserId._id.toString() === loggedInUser._id.toString()) {
+        return row.toUserId;
+      }
+      return row.fromUserId;
+    });
+
+    res.json({ data });
+  } catch (err) {
+    res.status(400).send({ message: err.message });
+  }
 });
 
 
 userRouter.get("/user/feed", auth, async (req, res) => {
+  const userSafeData=( "firstName  lastName emailId  about photoUrl skills  gender")
   try {
     const loggedInUser = req.user;
 
@@ -71,7 +79,7 @@ userRouter.get("/user/feed", auth, async (req, res) => {
         { _id: { $ne: loggedInUser._id } },
       ],
     })
-      .select("firstName lastName")
+      .select(userSafeData)
       .skip(skip)
       .limit(limit);
 

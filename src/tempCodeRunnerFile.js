@@ -1,1 +1,1 @@
-app.use("/", authRouter)
+require('dotenv').config()

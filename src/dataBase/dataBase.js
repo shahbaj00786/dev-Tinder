@@ -1,8 +1,10 @@
-const mongoose=require("mongoose")
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+dotenv.config({ path: require("path").resolve(__dirname, "../.env") });
 
-const userDB=async ()=>
-{
-    await mongoose.connect("mongodb+srv://Shahbaj:9tms4EOaHCBckf6w@cluster1.3zdvvwa.mongodb.net/PractNodeJs")
-}
+const userDB = async () => {
+  await mongoose.connect(process.env.MONGO_URL);
+  console.log(process.env.MONGO_URL);
+};
 
-module.exports={userDB}
+module.exports = { userDB };
