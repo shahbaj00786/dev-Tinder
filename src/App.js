@@ -31,8 +31,8 @@ app.use("/", userRouter)
 userDB()
   .then(() => {
     console.log("connected to DB successfully");
-    app.listen(process.env.PORT, () => {
-      console.log("listning on port 7777");
+        app.listen(process.env.PORT || 3000, "0.0.0.0", () => {
+      console.log(` Server running on 0.0.0.0:${process.env.PORT}`);
     });
   })
   .catch((err) => {
